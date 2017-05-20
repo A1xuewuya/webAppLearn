@@ -1,0 +1,246 @@
+
+1、APP与服务器之间的交互原理
+
+app端（客户端）与服务端的交互其实理解起来和容易，客户端想服务器端发送请求，服务器端进行数据运算后返回最终结果。结果可以是多种格式：
+    1、text 文本格式
+    2、xml 格式
+    3、json 格式
+    
+
+
+2、什么是JSON？
+JSON(JavaScript Object Notation) 是一种轻量级的数据交换格式。
+JSON 语法规则:
+数据在键值对中
+数据由逗号分隔
+花括号保存对象
+方括号保存数组
+简单的例子：
+{name:'小明', age:'18'}
+
+
+
+3、使用MUI提供的Ajax工具完成与服务器端的交互
+mui框架基于htm5plus的XMLHttpRequest，封装了常用的Ajax函数，支持GET、POST请求方式，支持返回json、xml、html、text、script数据类型； 
+本着极简的设计原则，mui提供了mui.ajax方法，并在mui.ajax方法基础上，进一步简化出最常用的mui.get()、mui.getJSON()、mui.post()三个方法。
+
+
+
+4、mui.ajax()
+参数：
+url       Type: String  请求发送的目标地址
+async     Type: Boolean 发送同步请求
+data      {xx:xx,xxx:xxx} 发送到服务器的业务数据
+dataType  "xml": 返回XML文档,"html": 返回纯文本HTML信息；,"script": 返回纯文本JavaScript代码,"json": 返回JSON数据,"text": 返回纯文本字符串
+error     请求失败时触发的回调函数，该函数接收三个参数： (xhr：xhr实例对象,type：错误描述，可取值："timeout", "error", "abort", "parsererror"、"null",errorThrown：可捕获的异常对象)
+success   请求成功时触发的回调函数，该函数接收三个参数：(data：服务器返回的响应数据，类型可以是json对象、xml对象、字符串等；,textStatus：状态描述，默认值为'success', xhr：xhr实例对象)
+timeout   请求超时时间（毫秒），默认值为0，表示永不超时；若超过设置的超时时间(非0的情况)，依然未收到服务器响应，则触发error回调
+type      请求方式，目前仅支持'GET'和'POST'，默认为'GET'方式
+headers   指定HTTP请求的Header
+
+
+
+
+======================一个简单的get的demo
+
+
+普通 GET
+接口地址 : http://hoa.hcoder.net/index.php?user=hcoder&pwd=hcoder 
+访问形式 : GET
+返回内容 : welcome to hcoder open api ^_^
+
+
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">ajax请求</h1>
+		</header>
+		
+		<div class="mui-content"><br />
+		    <button type="button" class="mui-btn mui-btn-danger" id="btn">获取服务器端数据</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+			    document.getElementById('btn').addEventListener('tap',function(){
+			        mui.ajax({
+			            url      : 'http://hoa.hcoder.net/index.php?user=hcoder&pwd=hcoder ',
+			            type     : 'GET',
+			            success  : function(data){
+			                mui.toast(data);
+			            },
+			            error    : function(xhr,type,errorThrown){
+			                mui.toast(type);
+			            }
+			        });
+			    });
+			});
+					</script>
+	</body>
+
+</html>
+
+
+
+
+==================一个简单的post的demo
+
+
+普通 POST
+接口地址 : http://hoa.hcoder.net/index.php?user=hcoder&pwd=hcoder 
+访问形式 : POST
+返回内容 : JSON 形式的您提交的POST数据
+
+
+
+
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">ajax请求</h1>
+		</header>
+		
+		<div class="mui-content"><br />
+		    <button type="button" class="mui-btn mui-btn-danger" id="btn">获取服务器端数据</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+			    document.getElementById('btn').addEventListener('tap',function(){
+			        mui.ajax({
+			            url      : 'http://hoa.hcoder.net/index.php?user=hcoder&pwd=hcoder ',
+			            type     : 'POST',
+			            data     :  {'name':'zc','age':'21'},
+			            success  : function(data){
+			                mui.toast(data);
+			            },
+			            error    : function(xhr,type,errorThrown){
+			                mui.toast(type);
+			            }
+			        });
+			    });
+			});
+					</script>
+	</body>
+
+</html>
+
+
+
+
+=====================json
+
+
+
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">ajax请求</h1>
+		</header>
+		
+		<div class="mui-content"><br />
+		    <button type="button" class="mui-btn mui-btn-danger" id="btn">获取服务器端数据</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				document.getElementById("btn").addEventListener('tap',function(){
+					mui.ajax({
+						type:'POST',
+						data:{'name':'zc','age':'20'},
+						url:'http://hoa.hcoder.net/index.php?user=hcoder&pwd=hcoder',
+						success:function(msg){
+							mui.toast(JSON.stringify(msg));
+							console.log(msg);
+						},
+						dataType:'json',
+						error:function(xhr,type,errorThrown){
+							mui.toast(type);
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+
+</html>
+
+
+
+5、Ajax简化模式
+mui.post()方法是对mui.ajax()的一个简化方法，直接使用POST请求方式向服务器发送数据、且不处理timeout和异常（若需处理异常及超时，
+请使用mui.ajax()方法），使用方法： mui.post(url[,data][,success][,dataType])，如上登录鉴权代码换成mui.post()后，代码更为简洁，如下：
+
+mui.post('http://server-name/login.php',{
+    username:'username',
+    password:'password'
+},function(data){
+    //服务器返回响应，根据响应结果，分析是否登录成功；
+		...
+    },'json'
+);
+
+
+
+
+mui.get()方法和mui.post()方法类似，只不过是直接使用GET请求方式向服务器发送数据、
+且不处理timeout和异常（若需处理异常及超时，请使用mui.ajax()方法），使用方法： mui.get(url[,data][,success][,dataType])，
+如下为获得某服务器新闻列表的代码片段，服务器以json格式返回数据列表
+
+mui.get('http://server-name/list.php',{category:'news'},function(data){
+    //获得服务器响应
+    ...
+    },'json'
+);
+
+
+
+
+
+
+mui.getJSON()方法是在mui.get()方法基础上的更进一步简化，限定返回json格式的数据，其它参数和mui.get()方法一致，使用方法： 
+mui.get(url[,data][,success])，如上获得新闻列表的代码换成mui.getJSON()方法后，更为简洁，如下：
+
+mui.getJSON('http://server-name/list.php',{category:'news'},function(data){
+    //获得服务器响应
+    ...
+    }
+);
+
+
+
+
+
