@@ -1,5 +1,192 @@
 Webview模块管理应用窗口界面，实现多窗口的逻辑控制管理操作。通过plus.webview可获取应用界面管理对象。
 
 
-========== plus.webview.all();获取所有Webview窗口
+========================== plus.webview.all();获取所有Webview窗口
+
+
+返回值：
+Array[ WebviewObject ] : 应用中创建的所有Webview窗口对象数组。
+<body>
+    <button type="button" class="mui-btn mui-btn-blue" id="btn">按钮</button>
+    <script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+    document.getElementById("btn").addEventListener('tap',function(){
+    	var views=plus.webview.all();
+    	for(var i=0;i<views.length;i++){
+    		//获取webview的对象类型
+//  		console.log(views[i]);
+    		//获取所有对象的一个json字符串话方法
+    		console.log(JSON.stringify(views[i]));
+    	}
+    });
+    </script>
+</body>
+
+
+=========================open创建并打开Webview窗口
+WebviewObject plus.webview.open( url, id, styles, aniShow, duration, showedCB );
+
+url: ( String ) 可选 打开窗口加载的HTML页面地址
+新打开Webview窗口要加载的HTML页面地址，可支持本地地址和网络地址。
+
+id: ( String ) 可选 打开窗口的标识
+窗口标识可用于在其它页面中通过getWebviewById来查找指定的窗口，为了保持窗口标识的唯一性，应该避免使用相同的标识来创建多个Webview窗口。 如果传入无效的字符串则使用url参数作为WebviewObject窗口的id值。
+
+styles: ( WebviewStyles ) 可选 创建Webview窗口的样式（如窗口宽、高、位置等信息）
+
+aniShow: ( AnimationTypeShow ) 可选 显示Webview窗口的动画效果
+如果没有指定窗口动画，则使用默认无动画效果“none”。
+
+duration: ( Number ) 可选 显示Webview窗口动画的持续时间
+单位为ms，如果没有设置则使用默认窗口动画时间600ms。
+
+showedCB: ( SuccessCallback ) 可选 Webview窗口显示完成的回调函数
+当指定Webview窗口显示动画执行完毕时触发回调函数，窗口无动画效果（如"none"动画效果）时也会触发此回调。
+返回值：WebviewObject : WebviewObject窗口对象
+
+plus.webview.open('new.html','new.html');
+
+<script type="text/javascript">
+    	document.getElementById("btn-open").addEventListener('tap',function(){
+    		//创建并打开新窗口，详细参照h5+文档
+    		var view=plus.webview.open(
+    			'test1.html',
+    			'test1.html',
+    			{},      //窗口的样式
+    			'slide-in-right' //动画的类型
+    			
+    		);
+    	});
+    </script>
+    
+    
+    
+    
+  ===========================create创建新的Webview窗口
+    WebviewObject plus.webview.create( url, id, styles, extras );
+    
+说明：
+创建Webview窗口，用于加载新的HTML页面，可通过styles设置Webview窗口的样式，创建完成后需要调用show方法才能将Webview窗口显示出来。
+
+参数：
+url: ( String ) 可选 新窗口加载的HTML页面地址
+新打开Webview窗口要加载的HTML页面地址，可支持本地地址和网络地址。
+id: ( String ) 可选 新窗口的标识
+窗口标识可用于在其它页面中通过getWebviewById来查找指定的窗口，为了保持窗口标识的唯一性，应该避免使用相同的标识来创建多个Webview窗口。 如果传入无效的字符串则使用url参数作为WebviewObject窗口的id值。
+styles: ( WebviewStyles ) 可选 创建Webview窗口的样式（如窗口宽、高、位置等信息）
+extras: ( JSON ) 可选 创建Webview窗口的额外扩展参数
+值为JSON类型，设置扩展参数后可以直接通过Webview的点（“.”）操作符获取扩展参数属性值，如： var w=plus.webview.create('url.html','id',{},{preload:"preload webview"}); // 可直接通过以下方法获取preload值 console.log(w.preload); // 输出值为“preload webview”
+
+返回值：WebviewObject : Webview窗口对象
+w = plus.webview.create('new.html','new.html');
+w.show();
+
+<script type="text/javascript">
+    	document.getElementById("btn-create").addEventListener('tap',function(){
+    		var view=plus.webview.create(
+    			'test1.html',
+    			'test1.html',
+    			{},
+    			'slide-in-left'
+    		);
+    	});
+    </script>
+    
+
+
+
+
+=====================getWebviewById查找指定标识的WebviewObject窗口
+
+在已创建的窗口列表中查找指定标识的Webview窗口并返回。 若没有查找到指定标识的窗口则返回null，若存在多个相同标识的Webview窗口，则返回第一个创建的Webview窗口。 如果要获取应用入口页面所属的Webview窗口，其标识为应用的%APPID%，可通过plus.runtime.appid获取。
+参数：id: ( String ) 必选 要查找的Webview窗口标识
+返回值：
+WebviewObject : WebviewObject窗口对象
+s = plus.webview.getWebviewById('new.html');
+console.log(s);
+
+
+<script type="text/javascript">
+    	document.getElementById("btn-create").addEventListener('tap',function(){
+    		//找到id为test1.html的webview
+    		var view=plus.webview.getWebviewById('test1.html');
+    		//如果不存在的话创建一个webview
+    		if(!view){
+    			var view=plus.webview.create(
+    			'test1.html',
+    			'test1.html',
+    			{},
+    			'slide-in-left'
+    			);
+    		}
+    		//否则的话将id为test1.html的页面显示出来
+    		view.show();
+    	});
+    </script>
+    
+    
+    
+========================currentWebview 获取当前窗口的WebviewObject对象
+WebviewObject plus.webview.currentWebview();
+说明：获取当前页面所属的Webview窗口对象。
+
+<script type="text/javascript">
+			document.getElementById("btn").addEventListener('tap',function(){
+				//获取当前页面所属的Webview窗口对象。
+				var cView=plus.webview.currentWebview();
+				//获取对象之后关闭窗口
+				cView.close();
+			});
+		</script>
+    
+    
+    
+    
+ <script type="text/javascript">
+			document.getElementById("btn").addEventListener('tap',function(){
+				//获取当前页面所属的Webview窗口对象。
+				var cView=plus.webview.currentWebview();
+				//获取对象之后关闭窗口
+//				cView.close();
+				//将此webview隐藏
+				cView.hide('slide-out-left');
+				//窗口再次打开有变化的话，用close,否则用hide方法
+				//在close和hide方法中都可以加动画
+			});
+		</script>
+    
+    
+    
+    
+    ===================plus.webview.getLaunchWebview() 获取应用首页WebviewObject窗口对象
+
+返回值 WebviewObject : WebviewObject窗口对象
+w = plus.webview.getLaunchWebview();
+w.show();
+    
+    
+    
+    
+  ======================  关闭Webview窗口
+void plus.webview.close( id_wvobj, aniClose, duration, extras );
+关闭已经打开的Webview窗口，需先获取窗口对象或窗口id，并可指定关闭窗口的动画及动画持续时间。
+参数：
+id_wvobj: ( String | WebviewObject ) 必选 要关闭Webview窗口id或窗口对象
+若操作窗口对象已经关闭，则无任何效果。 使用窗口id时，则查找对应id的窗口，如果有多个相同id的窗口则操作最先打开的窗口，若没有查找到对应id的WebviewObject对象，则无任何效果。
+aniClose: ( AnimationTypeClose ) 可选 关闭Webview窗口的动画效果
+如果没有指定关闭窗口动画，则使用默认值“auto”，即使用显示时设置的窗口动画相对应的关闭动画。
+duration: ( Number ) 可选 关闭Webview窗口动画的持续时间
+单位为ms，如果没有设置则使用显示窗口动画时间。
+extras: ( WebviewExtraOptions ) 可选 关闭Webview窗口扩展参数
+可用于指定Webview窗口动画是否使用图片加速。
+演示代码
+var ws=plus.webview.currentWebview();
+plus.webview.close(ws);
+
+    
+
+
+
+
 
