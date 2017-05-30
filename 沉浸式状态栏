@@ -1,0 +1,23 @@
+沉浸式状态栏
+
+
+首先在json中google下设置"ImmersedStatusbar":true,
+然后主界面上写上如下代码
+
+
+<script type="text/javascript">
+    	//沉浸式状态栏
+    	mui.init();
+    	mui.plusReady(
+    		//创建加载内容窗口
+    		var topoffset='45px';
+    		var header=document.getElementById("header");
+    		if(plus.navigator.isImmersedStatusbar()){
+    			//兼容immersed状态栏模式
+    			//获取状态栏高度并根据业务需求处理，这里重新计算子窗口的偏移位置
+    			topoffset=(Math.round(plus.navigator.getStatusbarHeight())+45);
+    			header.style.height=topoffset+'px';
+    			header.style.paddingTop=(topoffset-45)+'px';
+    		}
+    	);
+    </script>
